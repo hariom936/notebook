@@ -1,6 +1,9 @@
 const connectToMongo =  require('./db');
 
-const express = require('express')
+const express = require('express');
+const { default: mongoose } = require('mongoose');
+
+mongoose.set('strictQuery', true); // strictQurey code
 
 connectToMongo();
 const app = express()
@@ -10,6 +13,7 @@ const port = 3000
 //middle ware
 app.use(express.json())
 
+mongoose.set('strictQuery', true);
 // avaiable rotues.....
 
 app.use('/api/auth', require('./routes/auth'))
