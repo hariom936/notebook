@@ -2,6 +2,10 @@ const express = require('express');
 const User = require('../models/User');
 const router = express.Router();
 const { body, validationResult } = require('express-validator');
+const bcrypt = require('bcryptjs');
+var jwt = require('jsonwebtoken');
+
+const JWT_SECRET  = 'EngineerHariom@1245';
 
 
 
@@ -14,27 +18,37 @@ router.post('/createuser', [
     //if there are errors, return bed request and the errors...
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
+        return res.status(400).json({ errors: errors.array() });
     }
-    try{
 
-    
-    //check whether the user  with this email exists already....
-    let user =  await User.findOne({email: req.body.email});
-    if(user){
-        return res.status(400).json({error: "Sorry this user email id already exists.."})
-    }
-    user = await User.create({
-        name: req.body.name,
-        password: req.body.password,
-        email: req.body.email
-      })
-    //   .then(user => res.json(user))
-    //   .catch(err=> {console.log(err)
-    // res.json({error: 'Please enter a unique value for email', message: err.message})})
-    res.json(user)
-    }catch{
-        console.error(error.message);
+    try {
+        //check whether the user  with this email exists already....
+
+        let user = await User.findOne({ email: req.body.email });
+        if (user) {
+            return res.status(400).json({ error: "Sorry this user email id already exists.." })
+        }
+        //using bcrypt js
+        const salt = await bcrypt.genSaltSync(10);
+        const secPass = await bcrypt.hash(req.body.password, salt)
+        //create a new user
+        user = await User.create({
+            name: req.body.name,
+            password: secPass,
+            email: req.body.email
+        });
+
+        const data = {
+            user:{
+                id: user.id
+            }
+        }
+        
+        const authtoken =  jwt.sign(data, JWT_SECRET)
+
+        res.json({authtoken})
+    } catch {
+        console.error(errors.message);
         res.status(500).send("Some error occured...")
     }
 })
