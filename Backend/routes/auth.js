@@ -5,7 +5,7 @@ const { body, validationResult } = require('express-validator');
 const bcrypt = require('bcryptjs');
 var jwt = require('jsonwebtoken');
 
-const JWT_SECRET  = 'EngineerHariom@1245';
+const JWT_SECRET = 'EngineerHariom@1245';
 
 
 
@@ -39,18 +39,57 @@ router.post('/createuser', [
         });
 
         const data = {
-            user:{
+            user: {
                 id: user.id
             }
         }
-        
-        const authtoken =  jwt.sign(data, JWT_SECRET)
 
-        res.json({authtoken})
+        const authtoken = jwt.sign(data, JWT_SECRET)
+
+        res.json({ authtoken })
     } catch {
         console.error(errors.message);
         res.status(500).send("Some error occured...")
     }
 })
+
+
+//Authenticate a User : POST "/api/auth/login". No login required
+router.post('/login', [
+    body('email', 'Enter a valid email id with using @').isEmail(),
+    body('password', 'password must be 5 characters...').exists()
+], async (req, res) => {
+    //if there are errors, return bed request and the errors...
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+    }
+    const { email, password } = req.body;
+    try {
+        let user = await User.findOne({ email });
+        if (!user) {
+            return res.status(400).json({ error: "Sorry user does not exsits...." })
+        }
+
+        const passwordCompare =  await bcrypt.compare(password, user.password);
+        if (!passwordCompare) {
+            return res.status(400).json({ error: "Sorry user password does not exsits...." })
+        }
+
+        const data = {
+            user: {
+                id: user.id
+            }
+        }
+
+        const authtoken = jwt.sign(data, JWT_SECRET)
+        res.json(authtoken)
+    }
+    catch (error) {
+        console.error(errors.message);
+        res.status(500).send("Internal Server Error...")
+    }
+})
+
 
 module.exports = router
