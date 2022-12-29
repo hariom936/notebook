@@ -1,0 +1,26 @@
+{
+  "name": "notebook",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "Frontend": "cd Frontend && npm start",
+    "Backend": "cd Backend && npm start",
+    "both": "concurrently \"npm run Frontend\" \"npm run Backend\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hariom936/notebook.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/hariom936/notebook/issues"
+  },
+  "homepage": "https://github.com/hariom936/notebook#readme",
+  "dependencies": {
+    "concurrently": "^7.6.0",
+    "react-router-dom": "^6.6.1"
+  }
+}
