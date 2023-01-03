@@ -2,12 +2,17 @@ const connectToMongo =  require('./db');
 
 const express = require('express');
 const { default: mongoose } = require('mongoose');
+var cors = require('cors');
 
 mongoose.set('strictQuery', true); // strictQurey code
 
 connectToMongo();
 const app = express()
 const port = 5000
+
+
+
+app.use(cors())
 
 
 //middle ware
