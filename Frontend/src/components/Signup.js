@@ -38,7 +38,8 @@ const Signup = (props) => {
     setCredentials({ ...credentials, [e.target.name]: e.target.value })
   }
   return (
-    <div className="container">
+    <div className="container mt-3">
+       <h2>Create an account to use NoteBook</h2>
       <form onSubmit={handleSubmit}>
       <div className="mb-3">
           <label htmlFor="name" className="form-label"> Enter Name </label>
@@ -57,7 +58,7 @@ const Signup = (props) => {
 
         <div className="mb-3">
           <label htmlFor="cpassword" className="form-label"> Confirm Password</label>
-          <input type="cpassword" className="form-control" id="cpassword"  name="cpassword" onChange={onChange} minLength={5} required/>
+          <input type="password" className="form-control" id="cpassword"  name="cpassword" onChange={onChange} minLength={5} required/>
         </div>
 
         <button type="submit" className="btn btn-primary">Submit</button>
